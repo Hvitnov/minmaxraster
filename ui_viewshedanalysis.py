@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_viewshedanalysis.ui'
 #
-# Created: Tue Feb  3 11:42:22 2015
+# Created: Tue Jun 14 13:07:57 2016
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -37,7 +37,7 @@ class Ui_ViewshedAnalysis(object):
         self.cmbPoints.setEditable(False)
         self.cmbPoints.setObjectName(_fromUtf8("cmbPoints"))
         self.label = QtGui.QLabel(self.General_tab)
-        self.label.setGeometry(QtCore.QRect(10, 20, 111, 16))
+        self.label.setGeometry(QtCore.QRect(10, 20, 171, 16))
         self.label.setObjectName(_fromUtf8("label"))
         self.label_2 = QtGui.QLabel(self.General_tab)
         self.label_2.setGeometry(QtCore.QRect(10, 70, 131, 16))
@@ -192,7 +192,7 @@ class Ui_ViewshedAnalysis(object):
 
     def retranslateUi(self, ViewshedAnalysis):
         ViewshedAnalysis.setWindowTitle(_translate("ViewshedAnalysis", "Advanced viewshed analysis", None))
-        self.label.setText(_translate("ViewshedAnalysis", "Elevation raster", None))
+        self.label.setText(_translate("ViewshedAnalysis", "Elevation raster bitches!", None))
         self.label_2.setText(_translate("ViewshedAnalysis", "Observation points", None))
         self.label_5.setText(_translate("ViewshedAnalysis", "Output file", None))
         self.cmdBrowse.setText(_translate("ViewshedAnalysis", "Browse", None))
@@ -225,18 +225,18 @@ class Ui_ViewshedAnalysis(object):
         self.textBrowser_2.setHtml(_translate("ViewshedAnalysis", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'Ubuntu\'; font-size:11pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:10pt; font-weight:600;\">Raster layer:</span><span style=\" font-size:10pt;\"> any supported raster format. For better performance the extent of the raster should be cropped to the analysed area. Too large of a raster will saturate memory.</span></p>\n"
-"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:10pt; font-weight:600;\">Observer points:</span><span style=\" font-size:10pt;\"> shapefile containing observer points. The coordinate reference systems of the elevation raster and the observer/target point(s) </span><span style=\" font-size:10pt; text-decoration: underline;\">must match</span><span style=\" font-size:10pt;\">. If field named</span><span style=\" font-size:10pt; font-weight:600;\"> ID </span><span style=\" font-size:10pt;\">exists</span><span style=\" font-size:10pt; font-weight:600;\">, </span><span style=\" font-size:10pt;\">it will be used for filenames and </span><span style=\" font-size:10pt; text-decoration: underline;\">should be unique</span><span style=\" font-size:10pt;\">. Otherwise, the internal Id is used.</span></p>\n"
-"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:10pt; font-weight:600;\">Target points:</span><span style=\" font-size:10pt;\"> this option is normally used for intervisibility analysis. If chosen with other otput options it behaves as a mask, i.e. only the pixels corresponding to target points are analysed.</span></p>\n"
-"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:10pt; font-weight:600;\">Search radius</span><span style=\" font-size:10pt;\">: size of the analyzed area around each observer point.</span></p>\n"
-"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:10pt; font-weight:600;\">Adapt to highest point: </span><span style=\" font-size:10pt;\">search the highest point in the vicinity. The search is made in a quadrangular window where the observer point is in the middle.</span></p>\n"
-"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:10pt; font-weight:600;\">Viewshed:</span><span style=\" font-size:10pt;\"> standard true/false (binary) viewshed. Multiple viewsheds can be combined in a one raster layer using the cumulative option.</span></p>\n"
-"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:10pt; font-weight:600;\">Intervisibility: </span><span style=\" font-size:10pt;\">produces a network of visual relationships between two sets of points (or whithin a single set). </span></p>\n"
-"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:10pt; font-weight:600;\">Invisibility depth:</span><span style=\" font-size:10pt;\"> measures the size an object should attain in order to become visible if placed in an area out of view. </span></p>\n"
-"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:10pt; font-weight:600;\">Horizon:</span><span style=\" font-size:10pt;\"> is the last visible place on the terrain, which corresponds to fringes of visible zones.</span></p>\n"
-"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:10pt; font-weight:600;\">Earth curvature:</span><span style=\" font-size:10pt;\"> takes into account the slope of  Earth\'s surface around the observer point.</span></p>\n"
-"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:10pt; font-weight:600;\">Atmospheric refraction:</span><span style=\" font-size:10pt;\">  coefficient used to calculate the bending down of the light due to the atmosphere.</span></p></body></html>", None))
+"</style></head><body style=\" font-family:\'Noto Sans\'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Ubuntu\'; font-size:10pt; font-weight:600;\">Raster layer:</span><span style=\" font-family:\'Ubuntu\'; font-size:10pt;\"> any supported raster format. For better performance the extent of the raster should be cropped to the analysed area. Too large of a raster will saturate memory.</span></p>\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Ubuntu\'; font-size:10pt; font-weight:600;\">Observer points:</span><span style=\" font-family:\'Ubuntu\'; font-size:10pt;\"> shapefile containing observer points. The coordinate reference systems of the elevation raster and the observer/target point(s) </span><span style=\" font-family:\'Ubuntu\'; font-size:10pt; text-decoration: underline;\">must match</span><span style=\" font-family:\'Ubuntu\'; font-size:10pt;\">. If field named</span><span style=\" font-family:\'Ubuntu\'; font-size:10pt; font-weight:600;\"> ID </span><span style=\" font-family:\'Ubuntu\'; font-size:10pt;\">exists</span><span style=\" font-family:\'Ubuntu\'; font-size:10pt; font-weight:600;\">, </span><span style=\" font-family:\'Ubuntu\'; font-size:10pt;\">it will be used for filenames and </span><span style=\" font-family:\'Ubuntu\'; font-size:10pt; text-decoration: underline;\">should be unique</span><span style=\" font-family:\'Ubuntu\'; font-size:10pt;\">. Otherwise, the internal Id is used.</span></p>\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Ubuntu\'; font-size:10pt; font-weight:600;\">Target points:</span><span style=\" font-family:\'Ubuntu\'; font-size:10pt;\"> this option is normally used for intervisibility analysis. If chosen with other otput options it behaves as a mask, i.e. only the pixels corresponding to target points are analysed.</span></p>\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Ubuntu\'; font-size:10pt; font-weight:600;\">Search radius</span><span style=\" font-family:\'Ubuntu\'; font-size:10pt;\">: size of the analyzed area around each observer point.</span></p>\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Ubuntu\'; font-size:10pt; font-weight:600;\">Adapt to highest point: </span><span style=\" font-family:\'Ubuntu\'; font-size:10pt;\">search the highest point in the vicinity. The search is made in a quadrangular window where the observer point is in the middle.</span></p>\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Ubuntu\'; font-size:10pt; font-weight:600;\">Viewshed:</span><span style=\" font-family:\'Ubuntu\'; font-size:10pt;\"> standard true/false (binary) viewshed. Multiple viewsheds can be combined in a one raster layer using the cumulative option.</span></p>\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Ubuntu\'; font-size:10pt; font-weight:600;\">Intervisibility: </span><span style=\" font-family:\'Ubuntu\'; font-size:10pt;\">produces a network of visual relationships between two sets of points (or whithin a single set). </span></p>\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Ubuntu\'; font-size:10pt; font-weight:600;\">Invisibility depth:</span><span style=\" font-family:\'Ubuntu\'; font-size:10pt;\"> measures the size an object should attain in order to become visible if placed in an area out of view. </span></p>\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Ubuntu\'; font-size:10pt; font-weight:600;\">Horizon:</span><span style=\" font-family:\'Ubuntu\'; font-size:10pt;\"> is the last visible place on the terrain, which corresponds to fringes of visible zones.</span></p>\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Ubuntu\'; font-size:10pt; font-weight:600;\">Earth curvature:</span><span style=\" font-family:\'Ubuntu\'; font-size:10pt;\"> takes into account the slope of  Earth\'s surface around the observer point.</span></p>\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Ubuntu\'; font-size:10pt; font-weight:600;\">Atmospheric refraction:</span><span style=\" font-family:\'Ubuntu\'; font-size:10pt;\">  coefficient used to calculate the bending down of the light due to the atmosphere.</span></p></body></html>", None))
         self.label_19.setText(_translate("ViewshedAnalysis", "<html><head/><body><p><a href=\"http://hub.qgis.org/projects/viewshed/wiki\"><span style=\" text-decoration: underline; color:#0000ff;\">See project web page for more information.</span></a></p></body></html>", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("ViewshedAnalysis", "Reference", None))
         self.label_12.setText(_translate("ViewshedAnalysis", "Developed by Zoran Čučković\n"
@@ -247,12 +247,3 @@ class Ui_ViewshedAnalysis(object):
         self.label_18.setText(_translate("ViewshedAnalysis", "(cuckovic.zoran@gmail.com)", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.About_tab), _translate("ViewshedAnalysis", "About", None))
 
-
-if __name__ == "__main__":
-    import sys
-    app = QtGui.QApplication(sys.argv)
-    ViewshedAnalysis = QtGui.QDialog()
-    ui = Ui_ViewshedAnalysis()
-    ui.setupUi(ViewshedAnalysis)
-    ViewshedAnalysis.show()
-    sys.exit(app.exec_())
