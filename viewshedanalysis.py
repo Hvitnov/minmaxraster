@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
 """
 /***************************************************************************
- ViewshedAnalysis
+ MinMaxRaster
                                  A QGIS plugin
- ------description-------
+ Finds Highest and Lowest point within a polygon on a DEM.
+
                               -------------------
-        begin                : 2013-05-22
-        copyright            : (C) 2013 by Zoran Čučković
-        email                : /
+        begin                : 2016-06-13
+        git sha              : $Format:%H$
+        copyright            : (C) 2016 by Jakob Hvitnov
+        email                : hvitnov@gmail.com
  ***************************************************************************/
 
 /***************************************************************************
@@ -20,23 +22,17 @@
  ***************************************************************************/
 """
 # Import the PyQt and QGIS libraries
-
+import sys
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
-# Initialize Qt resources from file resources.py
 import resources_rc
-# Import the code for the dialog
-from viewshedanalysisdialog import ViewshedAnalysisDialog
 
+from viewshedanalysisdialog import ViewshedAnalysisDialog
 from doViewshed import *
 from osgeo import osr, gdal
 import os
-#import shutil# to copy files
-import numpy 
-#from scipy import sparse Nema ga !!
-from math import sqrt, degrees, atan2
-from operator import itemgetter #ovo je za sortiranje liste NE TREBA!!!
+import numpy as np
 
 
 class ViewshedAnalysis:
@@ -45,14 +41,14 @@ class ViewshedAnalysis:
         # Save reference to the QGIS interface
         self.iface = iface
         # initialize plugin directory
-        self.plugin_dir = QFileInfo(QgsApplication.qgisUserDbFilePath()).path() + "/python/plugins/viewshedanalysis"
+        self.plugin_dir = QFileInfo(QgsApplication.qgisUserDbFilePath()).path() + "/python/plugins/MinMaxRaster"
         # initialize locale
         localePath = ""
     ## REMOVED .toString()
         locale = str(QSettings().value("locale/userLocale"))[0:2] #to je za jezik
         
         if QFileInfo(self.plugin_dir).exists():
-            localePath = self.plugin_dir + "/i18n/ViewshedAnalysis_" + locale + ".qm"
+            localePath = self.plugin_dir + "/i18n/MinMaxRaster_" + locale + ".qm"
 
         if QFileInfo(localePath).exists():
             self.translator = QTranslator()
@@ -68,20 +64,19 @@ class ViewshedAnalysis:
         # Create action that will start plugin configuration
         # icon in the plugin reloader : from resouces.qrc file (compiled)
         self.action = QAction(
-            QIcon(":/plugins/ViewshedAnalysis/icon.png"),
-            u"Viewshed analysis", self.iface.mainWindow())
+            QIcon(":/plugins/MinMaxRaster/icon.png"),
+            u"MinMaxRaster", self.iface.mainWindow())
         # connect the action to the run method
-        QObject.connect(self.action, SIGNAL("triggered()"), self.run)
-        
+        self.action.triggered.connect(self.run)
+
 
         # Add toolbar button and menu item
         self.iface.addToolBarIcon(self.action)
         self.iface.addPluginToMenu(u"&Viewshed Analysis", self.action)
 
         # Fire refreshing of combo-boxes containing lists of table columns, after a new layer has been selected
-        
-        QObject.connect(self.dlg.ui.cmbPoints, SIGNAL("currentIndexChanged(int)"),self.load_cmbObsField)# ne radi sa zadanim parametrom (source)
-        QObject.connect(self.dlg.ui.cmbPointsTarget, SIGNAL("currentIndexChanged(int)"),self.load_cmbTargetField)# ne radi sa zadanim parametrom (source)
+        self.dlg.ui.cmbPoints.currentIndexChanged.connect(self.load_cmbObsField)
+        self.dlg.ui.cmbPointsTarget.currentIndexChanged.connect(self.load_cmbTargetField)
 
 
     def unload(self):
@@ -120,9 +115,20 @@ class ViewshedAnalysis:
             j+=1
             cmb_obj.addItem(str(fld.name()),str(fld.name())) #for QGIS 2.0 we need column names, not index (j)
 
+    def printMsg(self, msg):
+        QMessageBox.information(self.iface.mainWindow(), "Debug", msg)
+
+    def debugHere(self):
+        # Use pdb for debugging
+        import pdb
+        # These lines allow you to set a breakpoint in the app
+        pyqtRemoveInputHook()
+        pdb.set_trace()
 
     def run(self):
- 
+        # Use pdb for debugging
+        import pdb
+
 
         #UBACIVANJE RASTERA I TOCAKA (mora biti ovdje ili se barem pozvati odavde)
         myLayers = []
@@ -139,9 +145,12 @@ class ViewshedAnalysis:
                 #provjera da li je DEM 1 band .... !!!
                 self.dlg.ui.cmbRaster.addItem(myLayer.name(),myLayer.id())
 
-            elif myLayer.geometryType() == QGis.Point: 
+            elif myLayer.geometryType() == QGis.Point:
                 self.dlg.ui.cmbPoints.addItem(myLayer.name(),myLayer.id())
                 self.dlg.ui.cmbPointsTarget.addItem(myLayer.name(),myLayer.id())
+
+            elif myLayer.geometryType() == QGis.Polygon:
+                self.dlg.ui.cmbPolys.addItem(myLayer.name(), myLayer.id())
 
         #allAttrs = layer.pendingAllAttributesList()
        
@@ -153,34 +162,186 @@ class ViewshedAnalysis:
 
         l = self.dlg.ui.cmbPoints.itemData(self.dlg.ui.cmbPoints.currentIndex())
         ly_name = str(l)
-      #  QMessageBox.information(self.iface.mainWindow(), "drugi", str(ly_name))
+        # QMessageBox.information(self.iface.mainWindow(), "drugi", str(ly_name))
 
         # See if OK was pressed
-        
         if result == 1:
+
+            # Get path for output .shp file
             outPath = ViewshedAnalysisDialog.returnOutputFile(self.dlg)
+
+
             ly_obs = ViewshedAnalysisDialog.returnPointLayer(self.dlg)
             ly_target = ViewshedAnalysisDialog.returnTargetLayer(self.dlg)
-            ly_dem = ViewshedAnalysisDialog.returnRasterLayer(self.dlg)
+            ly_poly = ViewshedAnalysisDialog.returnPolyLayer(self.dlg)
+            polygon_layer = QgsMapLayerRegistry.instance().mapLayer(ly_poly)
+            polygon_path = polygon_layer.dataProvider().dataSourceUri()
+            if '|' in polygon_path:
+                path_end = polygon_path.find('|')
+                polygon_path = polygon_path[:path_end]
 
-            z_obs = ViewshedAnalysisDialog.returnObserverHeight(self.dlg) 
+            if self.dlg.demFile is None:
+                ly_dem = ViewshedAnalysisDialog.returnRasterLayer(self.dlg)
+                raster_layer = QgsMapLayerRegistry.instance().mapLayer(ly_dem)
+                raster_path = raster_layer.dataProvider().dataSourceUri()
+                if '|' in raster_path:
+                    path_end = raster_path.find('|')
+                    raster_path = raster_path[:path_end]
+            else:
+                ly_dem = self.dlg.demFile
+                raster_path = self.dlg.demFile
+                raster_layer = QgsRasterLayer(self.dlg.demFile)
+
+            raster = gdal.Open(raster_path)
+            shp = ogr.Open(polygon_path)
+            lyr = shp.GetLayer()
+
+            if self.dlg.ui.chkHighest.isChecked():
+                # Perform "Find highest / Lowest points algorithm"
+
+                # list to append points when found
+                pointList = []
+
+                features = range(lyr.GetFeatureCount())
+
+                for featNo in features:
+                    feat = lyr.GetFeature(featNo)
+                    # Get raster georeference info
+                    transform = raster.GetGeoTransform()
+                    xOrigin = transform[0]
+                    yOrigin = transform[3]
+                    pixelWidth = transform[1]
+                    pixelHeight = transform[5]
+
+                    # Reproject vector geometry to same projection as raster
+                    sourceSR = lyr.GetSpatialRef()
+                    targetSR = osr.SpatialReference()
+                    targetSR.ImportFromWkt(raster.GetProjectionRef())
+                    coordTrans = osr.CoordinateTransformation(sourceSR, targetSR)
+                    geom = feat.GetGeometryRef()
+
+                    # import pdb
+                    # These lines allow you to set a breakpoint in the app
+                    # pyqtRemoveInputHook()
+                    # pdb.set_trace()
+
+
+                    geom.Transform(coordTrans)
+
+                    # Get extent of feat
+                    geom = feat.GetGeometryRef()
+                    if (geom.GetGeometryName() == 'MULTIPOLYGON'):
+                        count = 0
+                        pointsX = [];
+                        pointsY = []
+                        for polygon in geom:
+                            geomInner = geom.GetGeometryRef(count)
+                            ring = geomInner.GetGeometryRef(0)
+                            numpoints = ring.GetPointCount()
+                            for p in range(numpoints):
+                                lon, lat, z = ring.GetPoint(p)
+                                pointsX.append(lon)
+                                pointsY.append(lat)
+                            count += 1
+                    elif (geom.GetGeometryName() == 'POLYGON'):
+                        ring = geom.GetGeometryRef(0)
+                        numpoints = ring.GetPointCount()
+                        pointsX = [];
+                        pointsY = []
+                        for p in range(numpoints):
+                            lon, lat, z = ring.GetPoint(p)
+                            pointsX.append(lon)
+                            pointsY.append(lat)
+
+                    else:
+                        sys.exit("ERROR: Geometry needs to be either Polygon or Multipolygon")
+
+                    xmin = min(pointsX)
+                    xmax = max(pointsX)
+                    ymin = min(pointsY)
+                    ymax = max(pointsY)
+
+                    # Specify offset and rows and columns to read
+                    xoff = int((xmin - xOrigin) / pixelWidth)
+                    yoff = int((yOrigin - ymax) / pixelWidth)
+                    xcount = int((xmax - xmin) / pixelWidth) + 1
+                    ycount = int((ymax - ymin) / pixelWidth) + 1
+
+                    # Create memory target raster
+                    target_ds = gdal.GetDriverByName('MEM').Create('', xcount, ycount, 1, gdal.GDT_Byte)
+                    target_ds.SetGeoTransform((
+                        xmin, pixelWidth, 0,
+                        ymax, 0, pixelHeight,
+                    ))
+
+                    # Create for target raster the same projection as for the value raster
+                    raster_srs = osr.SpatialReference()
+                    raster_srs.ImportFromWkt(raster.GetProjectionRef())
+                    target_ds.SetProjection(raster_srs.ExportToWkt())
+
+                    # Rasterize zone polygon to raster
+                    gdal.RasterizeLayer(target_ds, [1], lyr, burn_values=[1])
+
+                    try:
+                        # Read raster as arrays
+                        banddataraster = raster.GetRasterBand(1)
+                        dataraster = banddataraster.ReadAsArray(xoff, yoff, xcount, ycount).astype(np.float)
+
+                        bandmask = target_ds.GetRasterBand(1)
+                        datamask = bandmask.ReadAsArray(0, 0, xcount, ycount).astype(np.int)
+
+                        histogram = False
+                        decimals = 0
+                        # Calculate statistics of zonal raster`
+                        if histogram:
+                            if decimals > 0:
+                                dataraster = dataraster * pow(10, decimals)
+                            dataraster = dataraster.astype(np.int)
+                            a = np.bincount((dataraster * datamask).flat, weights=None, minlength=None)
+                        else:
+                            # Mask zone of raster
+                            zoneraster = np.ma.masked_array(dataraster, np.logical_not(datamask))
+                            a = [np.average(zoneraster), np.mean(zoneraster), np.median(zoneraster), np.std(zoneraster),
+                                 np.var(zoneraster), np.min(zoneraster), np.max(zoneraster)]
+                    except:
+                        self.printMsg("Error when analyzing!\nAre you sure the polygon layer lies within the DEM raster?")
+                        return 0
+
+                    maxis = np.unravel_index(np.argmax(zoneraster), zoneraster.shape)
+                    maxis2 = (maxis[1] * pixelWidth + xmin, ymax - maxis[0] * pixelWidth)
+                    pointList.append([maxis2[0], maxis2[1], zoneraster[maxis]])
+
+                shpfile = write_high_points(outPath, pointList, raster_layer.crs())
+
+                path = os.path.abspath(shpfile)
+                basename = os.path.splitext(os.path.basename(shpfile))[0]
+                layer = QgsVectorLayer(path, basename, "ogr")
+                QgsMapLayerRegistry.instance().addMapLayer(layer)
+                return True
+
+
+
+            z_obs = ViewshedAnalysisDialog.returnObserverHeight(self.dlg)
             z_obs_field = self.dlg.ui.cmbObsField.itemData(
-                self.dlg.ui.cmbObsField.currentIndex())#table columns are indexed 0-n 
+                self.dlg.ui.cmbObsField.currentIndex())#table columns are indexed 0-n
 
-            z_target = ViewshedAnalysisDialog.returnTargetHeight(self.dlg) 
+
+            z_target = ViewshedAnalysisDialog.returnTargetHeight(self.dlg)
+
             z_target_field =self.dlg.ui.cmbTargetField.itemData(
-                self.dlg.ui.cmbTargetField.currentIndex())       
-            
+                self.dlg.ui.cmbTargetField.currentIndex())
+
             Radius = ViewshedAnalysisDialog.returnRadius(self.dlg)
 
             search_top_obs = ViewshedAnalysisDialog.returnSearchTopObserver(self.dlg)
             search_top_target = ViewshedAnalysisDialog.returnSearchTopTarget(self.dlg)
             
             output_options = ViewshedAnalysisDialog.returnOutputOptions(self.dlg)
-                
+
             curv=ViewshedAnalysisDialog.returnCurvature(self.dlg)
-            refraction = curv[1] if curv else 0 
-            
+
+            refraction = curv[1] if curv else 0
+
             if not output_options [0]:
                 QMessageBox.information(self.iface.mainWindow(), "Error!", str("Select an output option")) 
                 return 
@@ -188,10 +349,10 @@ class ViewshedAnalysis:
              # uri = "file:///some/path/file.csv?delimiter=%s&crs=epsg:4723&wktField=%s" \
              # % (";", "shape")
 
-            out_raster = Viewshed(ly_obs, ly_dem, z_obs, z_target, Radius,outPath,
-                                  output_options,
-                                  ly_target, search_top_obs, search_top_target,
-                                  z_obs_field, z_target_field, curv, refraction)
+            out_raster = Viewshed(ly_obs, ly_dem, z_obs, z_target, Radius, outPath,
+                                 output_options,
+                                 ly_target, search_top_obs, search_top_target,
+                                 z_obs_field, z_target_field, curv, refraction)
             
             for r in out_raster:
                 #QMessageBox.information(self.iface.mainWindow(), "debug", str(r))
@@ -200,7 +361,7 @@ class ViewshedAnalysis:
                 #if error -> it's shapefile, skip rendering...
                 if not layer.isValid():
                     layer= QgsVectorLayer(r,lyName[0],"ogr")
-                    
+
                 else:
 ##                    #rlayer.setColorShadingAlgorithm(QgsRasterLayer.UndefinedShader)
 ##
@@ -253,8 +414,3 @@ class ViewshedAnalysis:
 
 #                     QMessageBox.information(None, "File created!", str("Please load file manually (as comma delilmited text)."))
 
-
-
-
-
-            

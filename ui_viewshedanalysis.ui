@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Advanced viewshed analysis</string>
+   <string>MinMaxRaster</string>
   </property>
   <widget class="QTabWidget" name="tabWidget">
    <property name="geometry">
@@ -29,11 +29,11 @@
     <attribute name="title">
      <string>General</string>
     </attribute>
-    <widget class="QComboBox" name="cmbPoints">
+    <widget class="QComboBox" name="cmbPolys">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>90</y>
+       <y>66</y>
        <width>201</width>
        <height>22</height>
       </rect>
@@ -46,33 +46,33 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>20</y>
+       <y>10</y>
        <width>171</width>
        <height>16</height>
       </rect>
      </property>
      <property name="text">
-      <string>Elevation raster bitches!</string>
+      <string>Elevation raster</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_2">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>70</y>
+       <y>52</y>
        <width>131</width>
        <height>16</height>
       </rect>
      </property>
      <property name="text">
-      <string>Observation points</string>
+      <string>Building Layer</string>
      </property>
     </widget>
     <widget class="QComboBox" name="cmbRaster">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>40</y>
+       <y>26</y>
        <width>201</width>
        <height>22</height>
       </rect>
@@ -82,9 +82,9 @@
      <property name="geometry">
       <rect>
        <x>220</x>
-       <y>40</y>
-       <width>181</width>
-       <height>41</height>
+       <y>100</y>
+       <width>191</width>
+       <height>31</height>
       </rect>
      </property>
     </widget>
@@ -92,7 +92,7 @@
      <property name="geometry">
       <rect>
        <x>220</x>
-       <y>20</y>
+       <y>80</y>
        <width>91</width>
        <height>16</height>
       </rect>
@@ -104,8 +104,8 @@
     <widget class="QPushButton" name="cmdBrowse">
      <property name="geometry">
       <rect>
-       <x>320</x>
-       <y>90</y>
+       <x>336</x>
+       <y>132</y>
        <width>75</width>
        <height>31</height>
       </rect>
@@ -118,9 +118,9 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>350</y>
+       <y>340</y>
        <width>411</width>
-       <height>91</height>
+       <height>111</height>
       </rect>
      </property>
      <property name="title">
@@ -176,6 +176,19 @@
       </property>
       <property name="text">
        <string>Horizon</string>
+      </property>
+     </widget>
+     <widget class="QRadioButton" name="chkHighest">
+      <property name="geometry">
+       <rect>
+        <x>200</x>
+        <y>90</y>
+        <width>181</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Highest points</string>
       </property>
      </widget>
     </widget>
@@ -485,6 +498,68 @@
      </property>
      <property name="text">
       <string>Target points (intervisibility)</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_points">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>90</y>
+       <width>131</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Observation points</string>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="cmbPoints">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>104</y>
+       <width>201</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="editable">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QPlainTextEdit" name="txtDemFile">
+     <property name="geometry">
+      <rect>
+       <x>220</x>
+       <y>20</y>
+       <width>191</width>
+       <height>31</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_9">
+     <property name="geometry">
+      <rect>
+       <x>220</x>
+       <y>0</y>
+       <width>91</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Or file</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="cmdBrowseDemFile">
+     <property name="geometry">
+      <rect>
+       <x>336</x>
+       <y>52</y>
+       <width>75</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Browse</string>
      </property>
     </widget>
    </widget>

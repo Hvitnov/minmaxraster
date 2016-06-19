@@ -42,7 +42,15 @@ class ViewshedAnalysisDialog(QtGui.QDialog):
         
         #connections
         self.ui.cmdBrowse.clicked.connect(self.fileOutput)
-##        self.ui.cmdAbout.clicked.connect(self.OpenPDFfile)
+        self.ui.cmdBrowseDemFile.clicked.connect(self.getDemFile)
+
+        self.demFile = None
+
+
+
+    def returnPolyLayer(self):
+        l = self.ui.cmbPolys.itemData(self.ui.cmbPolys.currentIndex())
+        return str(l)
 
     def returnPointLayer(self):
         #ovo mu daje varant sa svim podaccima
@@ -103,6 +111,8 @@ class ViewshedAnalysisDialog(QtGui.QDialog):
   #          try: opt [2]= float(self.ui.txtHorizonDepth.text())
    #         except: pass #will be 0
         elif self.ui.chkIntervisibility.isChecked():  opt [0]= "Intervisibility"
+        elif self.ui.chkHighest.isChecked():
+            opt[0] = "Highest"
 
         if self.ui.chkCumulative.isChecked(): opt [1]= "cumulative" 
     
@@ -119,6 +129,20 @@ class ViewshedAnalysisDialog(QtGui.QDialog):
             #fname.write(txtOutput.toPlainText())
             fname.close()
         except: pass
+
+    def getDemFile(self):
+        homedir = os.path.expanduser('~')  # ...works on at least windows and linux.
+        filename = QtGui.QFileDialog.getOpenFileName(self, 'Open DEM', homedir, '*.tif')
+        self.demFile = filename
+        try:
+            fname = open(filename, 'r')
+            self.ui.txtDemFile.clear()
+            self.ui.txtDemFile.insertPlainText(self.demFile)
+            fname.close()
+        except:
+            pass
+
+
         
     def returnCurvature (self): # and refraction
         if self.ui.chkCurvature.isChecked():

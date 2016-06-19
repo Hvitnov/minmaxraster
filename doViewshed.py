@@ -93,14 +93,11 @@ def bresenham_circle(x0,y0,radius):
     return lst
 
 
-def Viewshed (Obs_points_layer, Raster_layer, z_obs, z_target, radius, output,
+def Viewshed (Obs_points_layer, Raster_layer, polygon_layer, z_obs, z_target, radius, output,
               output_options,
               Target_layer=0, search_top_obs=0, search_top_target=0,
               z_obs_field=0, z_target_field=0,
               curvature=0, refraction=0):
-
-
-    
 
     # large nested function : using the same variables..
     def visibility(x0, y0, target_list, options,
@@ -127,13 +124,13 @@ def Viewshed (Obs_points_layer, Raster_layer, z_obs, z_target, radius, output,
             last_x, last_y = x0, y0
             last_err = 0
 
-        for n in target_list:
+        for targetInstance in target_list:
             #test
             q+=1
             x,y = x0 , y0
-            x2, y2= n[0:2]
+            x2, y2= targetInstance[0:2]
             if options == "Intervisibility" :# individual settings for each target point
-                target_offset, id_target = n[2:4]
+                target_offset, id_target = targetInstance[2:4]
                                 
             dx = abs(x2 - x0); dy = abs(y2 - y0)
             steep = (dy > dx)
@@ -341,6 +338,19 @@ def Viewshed (Obs_points_layer, Raster_layer, z_obs, z_target, radius, output,
 
 
                 ary.append([id_target, x_pix, y_pix, visib,  hgt, d, err ])
+
+                # Use pdb for debugging
+                # import pdb
+                # These lines allow you to set a breakpoint in the app
+                # pyqtRemoveInputHook()
+                # pdb.set_trace()
+
+                if visib:
+                    targ = targetInstance[4]
+                    targatt = targ.attributes()
+                    targ.initAttributes(2)
+                    targatt[1] += 1
+                    targ.setAttributes(targatt)
                 
                 #QMessageBox.information(None, "podatak:", str(ary))
 
@@ -619,7 +629,7 @@ def Viewshed (Obs_points_layer, Raster_layer, z_obs, z_target, radius, output,
                     try: z_target = float(feat2[z_target_field])
                     except: pass #do nothing, already given above
                 
-                targets.append ([x2,y2, z_target, id2])
+                targets.append ([x2,y2, z_target, id2, feat2])
             
                 #test_rpt += "\n - point "+ str(z_obs) + " - " + str(z_target) + " calculations + dumping: " + str (time.clock()- start_etape)
 
@@ -628,7 +638,9 @@ def Viewshed (Obs_points_layer, Raster_layer, z_obs, z_target, radius, output,
         elif x_offset == 0 or y_offset == 0 or x_offset2 == raster_x_size or y_offset2 == raster_y_size:
             targets= bresenham_circle(x,y,radius_pix)
         else: targets = target_list # standard circle, will save some time not to do it each time...
-        
+
+
+
         matrix_vis = visibility (x, y, targets, output_options[0], 
 				z_target, mask = (Target_layer))
         
@@ -710,7 +722,7 @@ def write_intervisibility_line (file_name, data_list, coordinate_ref_system):
     #QMessageBox.information(None, "Timing report:", str(data_list))
     
     fields = QgsFields() #there's a BUG in QGIS here (?), normally : fields = ....
-    fields.append(QgsField("Source", QVariant.String ))
+    fields.append(QgsField("Source", QVariant.String))
     fields.append(QgsField("Target", QVariant.String))
 ## fields.append(QgsField("Source_lbl", QVariant.String, 'string',50))
 ## fields.append(QgsField("Target_lbl", QVariant.String, 'string',50))
@@ -748,4 +760,30 @@ def write_intervisibility_line (file_name, data_list, coordinate_ref_system):
 
     del writer
     layer = None
+    return file_name + ".shp"
+
+
+def write_high_points(file_name, data_list, coordinate_ref_system):
+    fields = QgsFields() #there's a BUG in QGIS here (?), normally : fields = ....
+    fields.append(QgsField("Height",  QVariant.Double, 'double', 10, 3))
+    # field ready for visibility check
+    fields.append(QgsField("Connections", QVariant.Int, 'int', 5))
+    writer = QgsVectorFileWriter(file_name + ".shp", "CP1250", fields,
+                                  QGis.WKBPoint, coordinate_ref_system) #, "ESRI Shapefile"
+                                            #CP... = encoding
+    if writer.hasError() != QgsVectorFileWriter.NoError:
+        QMessageBox.information(None, "ERROR!", "Cannot write point file (?)")
+        return 0
+
+    for pt in data_list:
+        # create a new feature
+        feat = QgsFeature()
+        point = QgsPoint(pt[0], pt[1])
+        feat.setGeometry(QgsGeometry.fromPoint(point))
+        feat.setFields(fields)
+        feat['Height'] = float(pt[2])
+        feat['Connections'] = 0
+        writer.addFeature(feat)
+        del feat
+    del writer
     return file_name + ".shp"
