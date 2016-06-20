@@ -186,6 +186,9 @@ class MinMaxRaster:
             pixelHeight = transform[5]
 
             # list to append high or low points when found - used to write .shpfile later
+            attributesForSHP = {}
+            for attribute in poly_layer.schema:
+                attributesForSHP[attribute.GetName()] = attribute.GetTypeName()
             pointsForSHP = []
 
             # get the number of polygon features to iterate over
@@ -277,14 +280,22 @@ class MinMaxRaster:
 
                 # Add point to list of points to write in shapefile after analysis
                 if self.dlg.ui.OutputTypeSelector.currentIndex() == 0:
-                    pointsForSHP.append([max_map_point[0], max_map_point[1], analysis_raster[max_array_index], 'max'])
+                    pointsForSHP.append([max_map_point[0],
+                                         max_map_point[1],
+                                         analysis_raster[max_array_index],
+                                         'max',
+                                         feat.items()])
                 else:
-                    pointsForSHP.append([min_map_point[0], min_map_point[1], analysis_raster[min_array_index], 'min'])
+                    pointsForSHP.append([min_map_point[0],
+                                         min_map_point[1],
+                                         analysis_raster[min_array_index],
+                                         'min',
+                                         feat.items()])
 
                 self.progress.setValue(featNo)
 
             # Write points to shapefile
-            shpfile = self.write_points_layer(outPath, pointsForSHP, raster_map_layer.crs())
+            shpfile = self.write_points_layer(outPath, raster_map_layer.crs(), attributesForSHP, pointsForSHP)
 
             # add shapefile as QGIS layer
             path = os.path.abspath(shpfile)
@@ -294,25 +305,35 @@ class MinMaxRaster:
 
             return True
 
-    def write_points_layer(self, file_name, data_list, coordinate_ref_system):
+    def write_points_layer(self, file_name, coordinate_ref_system, attribute_list, data_list):
         fields = QgsFields()
+
+
+
+        for attribute in attribute_list:
+            field = QgsField(attribute, QVariant.String, attribute_list[attribute], 5)
+            fields.append(field)
+
         fields.append(QgsField("Type", QVariant.String, 'string', 5))
         fields.append(QgsField("Height", QVariant.Double, 'double', 10, 3))
         writer = QgsVectorFileWriter(file_name + ".shp", "CP1250", fields,
                                      QGis.WKBPoint, coordinate_ref_system)  # , "ESRI Shapefile"
         # CP... = encoding
         if writer.hasError() != QgsVectorFileWriter.NoError:
-            QMessageBox.information(None, "ERROR!", "Cannot write point file (?)")
+            QMessageBox.information(None, "ERROR!", "Cannot write point file - did you select a path?")
             return 0
+
 
         for data in data_list:
             # create a new feature
             feat = QgsFeature()
-
             # Write point data
             point = QgsPoint(data[0], data[1])
             feat.setGeometry(QgsGeometry.fromPoint(point))
             feat.setFields(fields)
+
+            for field in data[4]:
+                feat[field] = data[4][field]
             feat['Type'] = str(data[3])
             feat['Height'] = float(data[2])
             writer.addFeature(feat)
