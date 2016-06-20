@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_MinMaxRaster.ui'
 #
-# Created: Sun Jun 19 15:52:48 2016
+# Created: Mon Jun 20 15:43:23 2016
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -257,7 +257,7 @@ class Ui_MinMaxRaster(object):
         self.tab = QtGui.QWidget()
         self.tab.setObjectName(_fromUtf8("tab"))
         self.textBrowser_2 = QtGui.QTextBrowser(self.tab)
-        self.textBrowser_2.setGeometry(QtCore.QRect(0, 0, 421, 501))
+        self.textBrowser_2.setGeometry(QtCore.QRect(0, 0, 441, 381))
         self.textBrowser_2.setObjectName(_fromUtf8("textBrowser_2"))
         self.tabWidget.addTab(self.tab, _fromUtf8(""))
         self.About_tab = QtGui.QWidget()
@@ -298,12 +298,12 @@ class Ui_MinMaxRaster(object):
         self.label_4.setText(_translate("MinMaxRaster", "Output Type:", None))
         self.OutputTypeSelector.setItemText(0, _translate("MinMaxRaster", "Highest Points in Polygon", None))
         self.OutputTypeSelector.setItemText(1, _translate("MinMaxRaster", "Lowest Points in Polygon", None))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.General_tab), _translate("MinMaxRaster", "General", None))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.General_tab), _translate("MinMaxRaster", "Setup", None))
         self.textBrowser_2.setHtml(_translate("MinMaxRaster", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'Noto Sans\'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Ubuntu\'; font-size:10pt; font-weight:600;\">Polygon layer:</span><span style=\" font-family:\'Ubuntu\'; font-size:10pt;\"> A Vector layer containing polygins within which to find the highest and lowest points. For instance a layer representing buildings</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Ubuntu\'; font-size:10pt; font-weight:600;\">Polygon layer:</span><span style=\" font-family:\'Ubuntu\'; font-size:10pt;\"> A Vector layer containing polygons within which to find the highest and lowest points. For instance a layer representing buildings</span></p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:\'Ubuntu\'; font-size:10pt;\"><br /></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Ubuntu\'; font-size:10pt; font-weight:600;\">Digital Elevation Model:</span><span style=\" font-family:\'Ubuntu\'; font-size:10pt;\"> A raster layer representing a digital elevation model</span></p>\n"
 "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Ubuntu\'; font-size:10pt; font-weight:600;\">Output file:</span><span style=\" font-family:\'Ubuntu\'; font-size:10pt;\">  A .shp file containing a field for highest as well as lowest points in polygons</span></p></body></html>", None))

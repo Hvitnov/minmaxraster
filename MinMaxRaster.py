@@ -45,7 +45,7 @@ class MinMaxRaster:
         locale_path = os.path.join(
             self.plugin_dir,
             'i18n',
-            'LOS_{}.qm'.format(locale))
+            'MinMaxRaster_{}.qm'.format(locale))
 
         if os.path.exists(locale_path):
             self.translator = QTranslator()
