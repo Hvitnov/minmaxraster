@@ -263,6 +263,7 @@ class MinMaxRaster:
                     # Get indices of max and min values inside the polygon
                     results = [np.argmax(analysis_raster), np.argmin(analysis_raster)]
                 except:
+                    self.progress.close()
                     self.printMsg("Error when analyzing!\nAre you sure the polygon layer lies within the DEM raster?")
                     return 0
 
