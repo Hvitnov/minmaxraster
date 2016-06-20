@@ -1,6 +1,5 @@
 <RCC>
-    <qresource prefix="/plugins/ViewshedAnalysis" >
-	<file>Fig1_small.png</file>
+    <qresource prefix="/plugins/MinMaxRaster" >
         <file>icon.png</file>
     </qresource>
 </RCC>

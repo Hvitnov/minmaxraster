@@ -1,13 +1,11 @@
 <<<<<<< HEAD
-Advanced viewshed analysis for QGIS
+MinMaxRaster plugin for QGIS
 ===================================
 
-Viewshed analysis calculates visible surface from a given observer point over a digital elevation model. Basic viewshed analysis can  be be made in QGIS environment through performant GRASS viewshed algorithm *r.los* or SAGA viewshed module. However, these solutions give only a simple binary viewshed (true/false for each evaluated location). For more complex (and more interesting!) analyses a good amount of programming is required. 
+Use MinMaxRaster to find highest or lowest points of elevation inside one or more polygons.
+Useful in finding good antenna placement forinstance.
 
-Viewshed analysis plugin is native to QGIS and intended for more complex modelling, such as the depth below the visible horizon or generation of intervisibilty networks between groups of points. It is reasonably performant for standard viewsheds as well (which is dependent on the amount of RAM memory as well). 
-
-
-=======
+===================================
 # minmaxraster
 Qgis plug to find min and max points in raster file
 >>>>>>> 8a926db010737500b489545b536253c010565c28

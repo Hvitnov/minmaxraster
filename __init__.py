@@ -23,15 +23,15 @@
 
 
 def name():
-    return "Viewshed Analysis"
+    return "MinMaxRaster"
 
 
 def description():
-    return "Calculates viewsheds, intervisibility networks, invisibility depth and visible horizon for multiple points."
+    return "Finds Highest and/or lowest point within a vector polygon on a Digital Elevation Model"
 
 
 def version():
-    return "Version 0.4.2"
+    return "Version 1.0"
 
 
 def icon():
@@ -42,12 +42,12 @@ def qgisMinimumVersion():
     return "2.0"
 
 def author():
-    return "Zoran Čučković"
+    return "Jakob Hvitnov"
 
 def email():
     return "n/a"
 
 def classFactory(iface):
-    # load ViewshedAnalysis class from file ViewshedAnalysis
-    from viewshedanalysis import ViewshedAnalysis
-    return ViewshedAnalysis(iface)
+    # load MinMaxRaster class from file MinMaxRaster
+    from MinMaxRaster import MinMaxRaster
+    return MinMaxRaster(iface)

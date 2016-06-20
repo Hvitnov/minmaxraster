@@ -1,11 +1,11 @@
 #/***************************************************************************
-# ViewshedAnalysis
+# MinMaxRaster
 # 
 # ------description-------
 #                             -------------------
-#        begin                : 2013-05-22
-#        copyright            : (C) 2013 by Z
-#        email                : reee
+#        begin                : 2016-06-13
+#        copyright            : (C) 2016 by Jakob Hvitnov
+#        email                : 
 # ***************************************************************************/
 # 
 #/***************************************************************************
@@ -23,19 +23,19 @@ PLUGIN_UPLOAD = $(CURDIR)/plugin_upload.py
 # Makefile for a PyQGIS plugin 
 
 # translation
-SOURCES = viewshedanalysis.py ui_viewshedanalysis.py __init__.py viewshedanalysisdialog.py
-#TRANSLATIONS = i18n/viewshedanalysis_en.ts
+SOURCES = MinMaxRaster.py ui_MinMaxRaster.py __init__.py MinMaxRasterdialog.py
+#TRANSLATIONS = i18n/MinMaxRaster_en.ts
 TRANSLATIONS = 
 
 # global
 
-PLUGINNAME = viewshedanalysis
+PLUGINNAME = MinMaxRaster
 
-PY_FILES = viewshedanalysis.py viewshedanalysisdialog.py __init__.py
+PY_FILES = MinMaxRaster.py MinMaxRasterdialog.py __init__.py
 
 EXTRAS = icon.png 
 
-UI_FILES = ui_viewshedanalysis.py
+UI_FILES = ui_MinMaxRaster.py
 
 RESOURCE_FILES = resources_rc.py
 
