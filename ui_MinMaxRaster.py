@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_MinMaxRaster.ui'
 #
-# Created: Mon Jun 20 15:43:23 2016
+# Created: Mon Jun 20 16:20:18 2016
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
